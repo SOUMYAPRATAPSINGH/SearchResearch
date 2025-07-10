@@ -1,5 +1,5 @@
 
-# 🧬 PubMed Paper Fetcher
+# 🧬 PubMed Paper Fetcher (SearchResearch)
 
 A full-stack application that fetches research papers from **PubMed** based on user queries, specifically filtering for **pharmaceutical** or **biotech** affiliations. Built with **FastAPI** for the backend and a lightweight **React + Tailwind CSS** frontend.
 
