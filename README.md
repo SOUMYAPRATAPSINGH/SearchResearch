@@ -1,243 +1,164 @@
-Here is a cleaned-up and well-structured **full `README.md` file** for your **PubMed Paper Fetcher** project, suitable for placing in the project root or in the `backend/` directory:
+
+# 🧬 PubMed Paper Fetcher
+
+A full-stack application that fetches research papers from **PubMed** based on user queries, specifically filtering for **pharmaceutical** or **biotech** affiliations. Built with **FastAPI** for the backend and a lightweight **React + Tailwind CSS** frontend.
 
 ---
 
-```markdown
-# PubMed Paper Fetcher
+## 🔍 Features
 
-A FastAPI-based backend application that fetches research papers from PubMed based on user queries, filtering for pharmaceutical or biotech affiliations. It is paired with a lightweight React-based frontend that provides an intuitive interface to input queries and view results.
+- ✅ FastAPI-based backend using Biopython Entrez to query PubMed
+- ✅ Filters results based on pharma/biotech affiliations
+- ✅ Returns JSON data with PMID, title, date, emails, and affiliations
+- ✅ React frontend with:
+  - Dynamic query form
+  - Sortable results table
+  - CSV download
+  - Dark mode toggle
+  - Error/loading indicators
 
 ---
 
-## 🧠 Overview
-
-- **Backend**: FastAPI (Python) using Biopython's `Entrez` module to query PubMed. Returns JSON data with paper metadata including PMID, title, publication date, author emails, and affiliations.
-- **Frontend**: A React single-page app (SPA) styled with Tailwind CSS. Features include a query form, data table, CSV export, loading/error states, and dark mode.
-
----
-
-## 📦 Prerequisites
+## ⚙️ Prerequisites
 
 - Python 3.12+
-- [Poetry](https://python-poetry.org/) for Python dependency management
-- Node.js (optional, if modifying frontend)
+- [Poetry](https://python-poetry.org/) (for backend dependency management)
+- Node.js (optional, for frontend development)
 - Git
 
 ---
 
 ## 📁 Project Structure
 
-```
+
 
 pubmed-fetcher/
 ├── backend/
-│   ├── main.py            # FastAPI backend code
-│   ├── pyproject.toml     # Poetry dependency configuration
-│   └── README.md          # Backend-specific documentation
+│   ├── main.py            # FastAPI app
+│   ├── pyproject.toml     # Poetry dependencies
+│   └── README.md          # Optional: backend-specific info
 ├── frontend/
-│   └── index.html         # React + Tailwind single-page frontend
+│   └── index.html         # Single-page React frontend
 └── README.md              # Project root documentation (this file)
 
 ````
 
----
 
-## 🚀 Installation
+
+## 🚀 Setup Instructions
 
 ### 🔧 Backend Setup
 
-1. **Clone the Repository**:
-   ```bash
-   git clone <repository-url>
-   cd pubmed-fetcher/backend
+```bash
+# Clone the repo
+git clone https://github.com/your-username/pubmed-fetcher.git
+cd pubmed-fetcher/backend
+
+# Install Poetry dependencies
+poetry install
+
+# Activate the environment
+poetry shell
+
+# Run the FastAPI server
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ````
 
-2. **Install Dependencies**:
-   Make sure Poetry is installed:
-
-   ```bash
-   poetry --version
-   ```
-
-   Then install:
-
-   ```bash
-   poetry install
-   ```
-
-3. **Check Python Version**:
-
-   ```bash
-   python3 --version
-   ```
-
-   If you don't have Python 3.12 installed:
-
-   ```bash
-   pyenv install 3.12.0
-   pyenv local 3.12.0
-   poetry install
-   ```
+Access the backend at: [http://localhost:8000](http://localhost:8000)
+API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
 ### 🌐 Frontend Setup
 
-1. **Navigate to Frontend**:
+```bash
+# Navigate to frontend folder
+cd ../frontend
 
-   ```bash
-   cd ../frontend
-   ```
+# Serve using Python HTTP server
+python -m http.server 3000
+```
 
-2. **No Build Required**:
-   The frontend is a simple `index.html` file with React and Tailwind via CDN.
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
 ## 🧪 Usage
 
-### ▶️ Running the Backend
-
-1. **Activate the Poetry Shell**:
-
-   ```bash
-   cd backend
-   poetry shell
-   ```
-
-2. **Start the FastAPI Server**:
-
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-   ```
-
-3. **Access API Docs**:
-
-   * Base URL: [http://localhost:8000](http://localhost:8000)
-   * Swagger: [http://localhost:8000/docs](http://localhost:8000/docs)
+1. Enter a PubMed search query (e.g., `biotech cancer`)
+2. Provide your **email** (required by NCBI)
+3. Optionally enter your **NCBI API key** for higher request limits
+4. Set max results (default 20)
+5. Click **Search**
+6. View results, download CSV, or toggle dark mode
 
 ---
 
-### 💻 Running the Frontend
+## 🔐 Configuration
 
-1. **Serve the Page**:
-   From `frontend/` directory:
-
-   ```bash
-   python -m http.server 3000
-   ```
-
-2. **Open in Browser**:
-
-   * [http://localhost:3000](http://localhost:3000)
-
-3. **Use the Interface**:
-
-   * Enter search terms (e.g., `biotech cancer`)
-   * Provide email (required)
-   * Optional: Add NCBI API key for higher rate limits
-   * Set number of results, toggle debug mode
-   * Click **Search**
-
----
-
-## ✨ Features
-
-### Backend
-
-* Queries PubMed using NCBI's Entrez API
-* Filters for pharmaceutical or biotech affiliations
-* Returns metadata as JSON: `PMID`, `title`, `authors`, `affiliations`, `emails`, etc.
-* Supports optional API key for higher rate limits
-
-### Frontend
-
-* React + Tailwind-based single-page interface
-* Responsive and mobile-friendly
-* CSV download of results
-* Dark mode toggle
-* Sorting and loading indicators
-
----
-
-## ⚙️ Configuration
-
-* **Email (Required)**:
-  Needed by NCBI API for contact tracking. Enter via frontend or set a default in `main.py`.
-
-* **API Key (Optional)**:
-  Improves API rate limits. Can be input in frontend.
-
-* **CORS**:
-  CORS is enabled with `allow_origins=["*"]` in development. Change this in production.
+| Setting            | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| Email (required)   | Used for NCBI API compliance                               |
+| API Key (optional) | Boosts PubMed rate limits                                  |
+| CORS               | Development: `*` (open); update for production deployments |
 
 ---
 
 ## ☁️ Deployment
 
-### Backend (Render.com or similar)
+### 🚀 Backend (Render.com or similar)
 
-1. **Push Your Code**:
+1. **Push your code** to a Git repo
+2. On Render:
 
-   ```bash
-   git add .
-   git commit -m "Initial deploy"
-   git push origin main
-   ```
-
-2. **Render Settings**:
-
-   * **Web Service**
+   * Create a **Web Service**
    * **Build Command**: `poetry install --no-dev`
    * **Start Command**: `poetry run uvicorn main:app --host 0.0.0.0 --port $PORT`
-   * **Environment**:
+   * **Environment Variables**:
 
      * `PYTHON_VERSION=3.12`
 
----
+### 🌍 Frontend (Render or GitHub Pages)
 
-### Frontend (Render.com or similar)
+1. Push `index.html` to the `frontend/` directory
+2. On Render:
 
-1. **Push Code**:
-   Commit the `index.html` file inside `frontend/` directory.
-
-2. **Render Settings**:
-
-   * **Static Site**
+   * Create a **Static Site**
    * **Publish Directory**: `frontend/`
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork this repository
-2. Create your feature branch:
-
-   ```bash
-   git checkout -b feature-name
-   ```
-3. Commit changes:
-
-   ```bash
-   git commit -m "Add feature"
-   ```
-4. Push to branch and open a Pull Request
+```bash
+# Fork the repo and clone it
+git checkout -b feature-branch
+# Make your changes
+git commit -m "Add awesome feature"
+git push origin feature-branch
+# Open a pull request!
+```
 
 ---
 
 ## 📄 License
 
-\[Add your license here, e.g., MIT, Apache 2.0, etc.]
+\[Add your preferred license here, e.g., MIT, Apache 2.0]
 
 ---
 
 ## 📬 Contact
 
-For questions, issues, or contributions, please reach out to the project maintainer.
-
----
+For questions, suggestions, or feedback, please reach out to the project maintainer.
 
 ```
 
-Let me know if you want to embed screenshots, add API example payloads, or automate setup with shell scripts or Docker.
+---
+
+### ✅ Next Steps:
+- Replace `https://github.com/your-username/pubmed-fetcher.git` with your actual GitHub repo URL.
+- Specify your **license** in the relevant section (and add a `LICENSE` file).
+- (Optional) Add project screenshots or badges at the top for flair.
+
+Let me know if you want a version with badges, GIF demo, Docker support, or anything else!
 ```
