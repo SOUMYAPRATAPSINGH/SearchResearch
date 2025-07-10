@@ -51,7 +51,7 @@ pubmed-fetcher/
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/pubmed-fetcher.git
+git clone https://github.com/SOUMYAPRATAPSINGH/SearchResearch.git
 cd pubmed-fetcher/backend
 
 # Install Poetry dependencies
@@ -141,24 +141,4 @@ git push origin feature-branch
 
 ---
 
-## 📄 License
 
-\[Add your preferred license here, e.g., MIT, Apache 2.0]
-
----
-
-## 📬 Contact
-
-For questions, suggestions, or feedback, please reach out to the project maintainer.
-
-```
-
----
-
-### ✅ Next Steps:
-- Replace `https://github.com/your-username/pubmed-fetcher.git` with your actual GitHub repo URL.
-- Specify your **license** in the relevant section (and add a `LICENSE` file).
-- (Optional) Add project screenshots or badges at the top for flair.
-
-Let me know if you want a version with badges, GIF demo, Docker support, or anything else!
-```
