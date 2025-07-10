@@ -1,33 +1,31 @@
-PubMed Paper Fetcher
+# PubMed Paper Fetcher
+
 A FastAPI-based backend application that fetches research papers from PubMed based on user queries, filtering for pharmaceutical or biotech affiliations. Paired with a React-based frontend for an interactive user interface.
-Overview
 
-Backend: Written in Python using FastAPI, the backend queries the PubMed API (via Biopython) to retrieve paper details (e.g., PMID, title, publication date, author email, affiliation) and returns results in JSON format.
-Frontend: A single-page React application with Tailwind CSS styling, offering a form to input search parameters and a table to display results with sorting, CSV download, and dark mode toggle.
+## Overview
 
-Prerequisites
+- **Backend**: Written in Python using FastAPI, the backend queries the PubMed API (via Biopython) to retrieve paper details (e.g., PMID, title, publication date, author email, affiliation) and returns results in JSON format.
+- **Frontend**: A single-page React application with Tailwind CSS styling, offering a form to input search parameters and a table to display results with sorting, CSV download, and dark mode toggle.
 
-Python 3.12 or higher
-Poetry for dependency management
-Node.js (optional, for serving the frontend locally)
-Git (for version control)
+## Prerequisites
 
-Project Structure
-pubmed-fetcher/
-├── backend/
-│   ├── main.py          # FastAPI backend code
-│   ├── pyproject.toml   # Poetry configuration and dependencies
-│   └── README.md        # This file
-├── frontend/
-│   └── index.html       # React frontend code
-└── README.md            # Project root README
+- Python 3.12 or higher
+- [Poetry](https://python-poetry.org/) for dependency management
+- Node.js (optional, for serving the frontend locally)
+- Git (for version control)
 
-Installation
-Backend Setup
+## Project Structure
 
-Clone the Repository:
-git clone <your-repo-url>
-cd pubmed-fetcher/backend
+pubmed-fetcher/├── backend/│   ├── main.py          # FastAPI backend code│   ├── pyproject.toml   # Poetry configuration and dependencies│   └── README.md        # This file├── frontend/│   └── index.html       # React frontend code└── README.md            # Project root README
+
+## Installation
+
+### Backend Setup
+
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd pubmed-fetcher/backend
 
 
 Install Dependencies:
@@ -43,7 +41,7 @@ Verify Python Version:
 Check your Python version:python3 --version
 
 
-If Python 3.12 isn’t installed, use pyenv to install it:pyenv install 3.12.0
+If Python 3.12 isn’t installed, install it using a tool like pyenv:pyenv install 3.12.0
 pyenv local 3.12.0
 poetry install
 
@@ -119,7 +117,7 @@ Create a Web Service.
 Build Command: poetry install --no-dev
 Start Command: poetry run uvicorn main:app --host 0.0.0.0 --port $PORT
 Environment: Set PYTHON_VERSION=3.12.
-Deploy and note the URL (e.g., https://your-backend.onrender.com).
+Deploy and note the URL.
 
 
 
@@ -134,8 +132,7 @@ Configure Render:
 
 Create a Static Site.
 Publish Directory: frontend/
-Environment: Set REACT_APP_API_URL=https://your-backend.onrender.com.
-Deploy and note the URL (e.g., https://your-frontend.onrender.com).
+Deploy and note the URL.
 
 
 
@@ -147,6 +144,6 @@ Commit changes (git commit -m "Add new feature").
 Push and open a pull request.
 
 License
-[MIT License] - See LICENSE file for details (add a LICENSE file if not present).
+[Specify license here] - Add a LICENSE file for details.
 Contact
-For questions or support, contact Your Name at you@example.com.
+For questions or support, contact the project maintainer.```
