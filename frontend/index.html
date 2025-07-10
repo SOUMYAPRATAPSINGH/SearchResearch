@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PubMed Paper Fetcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #ffffff;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            color: #000000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto 0;
+            min-width: 200px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .results-container {
+            display: none;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .results-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .paper-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .paper-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .paper-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .meta-value {
+            color: #ffffff;
+            font-weight: 400;
+            word-break: break-word;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #51cf66;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .paper-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PubMed Paper Fetcher</h1>
+            <p>Search for pharmaceutical and biotech research papers</p>
+        </div>
+
+        <div class="form-container">
+            <form id="paperForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="query">Search Query *</label>
+                        <textarea id="query" name="query" rows="3" placeholder="Enter your search terms (e.g., 'cancer treatment drug discovery')" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="apiKey">API Key (Optional)</label>
+                        <input type="text" id="apiKey" name="apiKey" placeholder="Your NCBI API key for higher rate limits">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxResults">Max Results</label>
+                        <input type="number" id="maxResults" name="maxResults" value="100" min="1" max="1000">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="debug" name="debug">
+                            <label for="debug">Enable debug mode</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Search Papers
+                </button>
+            </form>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Searching for papers... This may take a few moments.</p>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <div class="results-header">
+                <h2 id="resultsTitle">Search Results</h2>
+                <p id="resultsCount"></p>
+            </div>
+            <div id="papersContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000'; // Change this to your FastAPI server URL
+
+        document.getElementById('paperForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const requestData = {
+                query: formData.get('query'),
+                email: formData.get('email'),
+                api_key: formData.get('apiKey') || null,
+                max_results: parseInt(formData.get('maxResults')),
+                debug: formData.get('debug') === 'on'
+            };
+
+            await fetchPapers(requestData);
+        });
+
+        async function fetchPapers(requestData) {
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // Reset UI
+            hideElement(errorMessage);
+            hideElement(successMessage);
+            hideElement(resultsContainer);
+            
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Searching...';
+            showElement(loading);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/fetch-papers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'An error occurred while fetching papers');
+                }
+
+                displayResults(data.papers);
+                showSuccessMessage(`Successfully found ${data.papers.length} papers with pharmaceutical/biotech affiliations!`);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorMessage(error.message || 'Failed to fetch papers. Please check your connection and try again.');
+            } finally {
+                // Reset UI
+                hideElement(loading);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Search Papers';
+            }
+        }
+
+        function displayResults(papers) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsCount = document.getElementById('resultsCount');
+            const papersContainer = document.getElementById('papersContainer');
+
+            resultsTitle.textContent = 'Search Results';
+            resultsCount.textContent = `Found ${papers.length} papers with pharmaceutical/biotech affiliations`;
+
+            papersContainer.innerHTML = '';
+
+            papers.forEach((paper, index) => {
+                const paperCard = createPaperCard(paper, index);
+                papersContainer.appendChild(paperCard);
+            });
+
+            showElement(resultsContainer);
+        }
+
+        function createPaperCard(paper, index) {
+            const card = document.createElement('div');
+            card.className = 'paper-card';
+            card.style.animationDelay = `${index * 0.1}s`;
+
+            card.innerHTML = `
+                <div class="paper-title">${escapeHtml(paper.Title)}</div>
+                <div class="paper-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">PMID</div>
+                        <div class="meta-value">
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/${paper.PMID}/" target="_blank" style="color: #ffffff; text-decoration: underline;">
+                                ${paper.PMID}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Publication Date</div>
+                        <div class="meta-value">${escapeHtml(paper['Publication Date'])}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Corresponding Author Email</div>
+                        <div class="meta-value">
+                            ${paper['Corresponding Author Email'] !== 'N/A' 
+                                ? `<a href="mailto:${paper['Corresponding Author Email']}" style="color: #ffffff; text-decoration: underline;">${escapeHtml(paper['Corresponding Author Email'])}</a>`
+                                : 'N/A'
+                            }
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Affiliation</div>
+                        <div class="meta-value">${escapeHtml(paper.Affiliation)}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function showElement(element) {
+            element.style.display = 'block';
+        }
+
+        function hideElement(element) {
+            element.style.display = 'none';
+        }
+
+        function showErrorMessage(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            showElement(errorMessage);
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                hideElement(errorMessage);
+            }, 10000);
+        }
+
+        function showSuccessMessage(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            showElement(successMessage);
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                hideElement(successMessage);
+            }, 5000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to form inputs
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
